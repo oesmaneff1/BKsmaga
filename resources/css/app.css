@@ -1,0 +1,105 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Merriweather:wght@400;700&display=swap');
+
+@theme {
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-serif: 'Merriweather', ui-serif, Georgia, serif;
+
+    /* ── Skema Warna Utama SMAN 3 Kediri ─────────────────────────── */
+    /* Primary: Deep Navy */
+    --color-navy:        #0C084C;
+    --color-navy-light:  #1a1570;
+    --color-navy-dark:   #07052e;
+
+    /* Secondary: Soft Blue */
+    --color-soft-blue:   #EEF7FF;
+    --color-soft-blue-2: #dbeeff;
+
+    /* Accent: Golden Yellow */
+    --color-gold:        #FFC81E;
+    --color-gold-dark:   #e6b300;
+    --color-gold-light:  #ffd84d;
+
+    /* Palet hijau (dipertahankan untuk konten materi) */
+    --color-brand-50:  #f0fdf4;
+    --color-brand-100: #dcfce7;
+    --color-brand-200: #bbf7d0;
+    --color-brand-300: #86efac;
+    --color-brand-400: #4ade80;
+    --color-brand-500: #22c55e;
+    --color-brand-600: #16a34a;
+    --color-brand-700: #15803d;
+    --color-brand-800: #166534;
+    --color-brand-900: #14532d;
+    --color-brand-950: #052e16;
+}
+
+/* ─── SMOOTH SCROLL ─── */
+html { scroll-behavior: smooth; }
+
+/* ─── HERO WAVE ─── */
+.wave-bottom {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+.wave-bottom svg { display: block; width: calc(100% + 1.3px); height: 70px; }
+
+/* ─── GLASSMORPHISM CARD ─── */
+.glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* ─── MARQUEE TICKER ─── */
+@keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+.marquee-track { animation: marquee 28s linear infinite; }
+.marquee-track:hover { animation-play-state: paused; }
+
+/* ─── FADE-UP ANIMATION ─── */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.7s ease forwards; }
+.fade-up-delay-1 { animation-delay: 0.15s; opacity: 0; }
+.fade-up-delay-2 { animation-delay: 0.30s; opacity: 0; }
+.fade-up-delay-3 { animation-delay: 0.45s; opacity: 0; }
+
+/* ─── COUNTER NUMBER ─── */
+.counter-number { font-variant-numeric: tabular-nums; }
+
+/* ─── BUTTON RIPPLE ─── */
+.btn-ripple { position: relative; overflow: hidden; }
+.btn-ripple::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.25);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+}
+.btn-ripple:hover::after { transform: scaleX(1); }
+
+/* ─── SERVICE CARD HOVER ─── */
+.service-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.service-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(21,128,61,0.15); }
+
+/* ─── NEWS CARD HOVER ─── */
+.news-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.news-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(0,0,0,0.1); }

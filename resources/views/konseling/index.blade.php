@@ -33,19 +33,19 @@
        Contoh: background-image: url("{{ asset('images/hero-slide-1.jpg') }}");
     ──────────────────────────────────────────────────────────────── */
     .hero-slide-1 {
-        background-image: url("{{ asset('images/gambar-slide1.JPG') }}");
+        background-image: url("{{ asset('images/gambar-slide1.jpeg') }}");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
     }
     .hero-slide-2 {
-        background-image: url("{{ asset('images/gambar-slide2.JPG') }}");
+        background-image: url("{{ asset('images/gambar-slide2.jpeg') }}");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
     }
     .hero-slide-3 {
-        background-image: url("{{ asset('images/gambar-slide3.JPG') }}");
+        background-image: url("{{ asset('images/gambar-slide3.jpeg') }}");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;

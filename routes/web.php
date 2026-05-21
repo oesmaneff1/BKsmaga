@@ -125,6 +125,10 @@ Route::middleware('auth')
         Route::patch('materials/{material}/toggle', [AdminMaterialController::class, 'toggle'])
             ->name('materials.toggle');
 
+        // ── Download RPL (hanya admin, file disimpan di private storage) ──
+        Route::get('materials/{material}/rpl', [AdminMaterialController::class, 'downloadRpl'])
+            ->name('materials.rpl.download');
+
         // ── Tim BK (Counselors) CRUD ──────────────────────────
         Route::resource('counselors', AdminCounselorController::class)
             ->except(['show']);

@@ -484,7 +484,7 @@
             </svg>
             Halaman Layanan
         </a>
-        <a href="{{ route('beranda') }}" target="_blank" class="nav-item">
+        <a href="{{ url('/') }}" target="_blank" class="nav-item">
             <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
@@ -629,17 +629,50 @@
                 });
 
                 xhr.addEventListener('load', function() {
-                    if (xhr.status >= 200 && xhr.status < 400) {
-                        // Jika sukses atau redirect, arahkan ke URL respon terakhir
-                        window.location.href = xhr.responseURL || form.action;
-                    } else {
-                        // Jika error (misal 422 validation), sembunyikan overlay agar user bisa lihat error
+                    const finalUrl   = xhr.responseURL;
+                    const formAction = form.action;
+
+                    // XHR otomatis follow redirect. Jika URL akhir berbeda dari action form
+                    // berarti server sudah redirect (sukses) → ikuti URL tersebut.
+                    if (finalUrl && finalUrl !== formAction) {
+                        window.location.href = finalUrl;
+                        return;
+                    }
+
+                    // Status 2xx tanpa redirect juga dianggap sukses
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        window.location.href = finalUrl || form.action;
+                        return;
+                    }
+
+                    // Status 422 (validation error)
+                    if (xhr.status === 422) {
                         overlay.style.display = 'none';
                         if (submitBtn) submitBtn.disabled = false;
+                        
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            let errorMessages = '';
+                            if (response.errors) {
+                                for (let field in response.errors) {
+                                    errorMessages += '- ' + response.errors[field].join('\n- ') + '\n';
+                                }
+                            } else if (response.message) {
+                                errorMessages = response.message;
+                            }
+                            alert('Gagal menyimpan. Terdapat kesalahan:\n\n' + errorMessages);
+                        } catch (e) {
+                            alert('Terjadi kesalahan validasi, periksa kembali isian form Anda.');
+                        }
+                        return;
+                    }
 
-                        // Jika respon adalah 422, kita perlu reload halaman untuk menampilkan pesan error Laravel
-                        // (karena error dikirim via session/flash)
-                        window.location.reload();
+                    // Status 4xx/5xx lainnya
+                    if (xhr.status >= 400) {
+                        overlay.style.display = 'none';
+                        if (submitBtn) submitBtn.disabled = false;
+                        alert('Terjadi kesalahan pada server (Error ' + xhr.status + '). Silakan coba lagi.');
+                        return;
                     }
                 });
 

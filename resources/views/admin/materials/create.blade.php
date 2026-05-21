@@ -53,7 +53,6 @@ $action  = $isEdit
             </div>
             @endif
 
-
             {{-- ── Judul ── --}}
             <div class="form-group">
                 <label class="form-label" for="title">
@@ -121,15 +120,15 @@ $action  = $isEdit
                 @enderror
             </div>
 
-            {{-- ── Upload File (kolom kanan) ── --}}
+            {{-- ── Dokumen RPL (Opsional) ── --}}
             <div class="form-group">
-                <label class="form-label" for="file">
-                    Upload Dokumen Materi
-                    <span style="font-weight:400;color:#9ca3af">(opsional)</span>
+                <label class="form-label" for="rpl_document">
+                    Dokumen RPL
+                    <span style="font-weight:400;color:#9ca3af">(Opsional – Rencana Pelaksanaan Layanan)</span>
                 </label>
 
-                {{-- File yang sudah ada (mode edit) --}}
-                @if($isEdit && $material->hasFile())
+                {{-- File RPL yang sudah ada (mode edit) --}}
+                @if($isEdit && $material->rpl_document)
                 <div style="display:flex;align-items:center;gap:.75rem;padding:.875rem 1.125rem;background:rgba(12,8,76,.04);border:1px solid rgba(12,8,76,.12);border-radius:.75rem;margin-bottom:.875rem">
                     <div style="width:36px;height:36px;border-radius:.5rem;background:rgba(12,8,76,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                         <svg width="18" height="18" fill="none" stroke="#0C084C" viewBox="0 0 24 24">
@@ -137,33 +136,79 @@ $action  = $isEdit
                         </svg>
                     </div>
                     <div style="flex:1;min-width:0">
-                        <div style="font-size:.78rem;font-weight:700;color:#0C084C;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.15rem">File Terpasang</div>
-                        <div style="font-size:.82rem;color:#6b7280;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ basename($material->file_path) }}</div>
+                        <div style="font-size:.78rem;font-weight:700;color:#0C084C;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.15rem">Dokumen RPL Terpasang</div>
+                        <div style="font-size:.82rem;color:#6b7280;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ basename($material->rpl_document) }}</div>
                     </div>
-                    <a href="{{ asset('storage/' . $material->file_path) }}" target="_blank"
-                       style="display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;color:#0C084C;font-weight:700;text-decoration:none;flex-shrink:0;padding:.4rem .875rem;border:1px solid rgba(12,8,76,.2);border-radius:.5rem;transition:background .15s;"
-                       onmouseover="this.style.background='rgba(12,8,76,.06)'" onmouseout="this.style.background='transparent'">
+                    <a href="{{ route('admin.materials.rpl.download', $material) }}" target="_blank"
+                       style="display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;color:#0C084C;font-weight:700;text-decoration:none;flex-shrink:0;padding:.4rem .875rem;border:1px solid rgba(12,8,76,.2);border-radius:.5rem;">
                         <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                         Lihat
                     </a>
                 </div>
                 <label style="display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;cursor:pointer;margin-bottom:.875rem;padding:.4rem .75rem;border:1px solid #fee2e2;border-radius:.5rem;background:#fef2f2;">
-                    <input type="checkbox" name="remove_file" value="1" {{ old('remove_file') ? 'checked' : '' }}
+                    <input type="checkbox" name="remove_rpl" value="1" {{ old('remove_rpl') ? 'checked' : '' }}
                            style="width:14px;height:14px;accent-color:#dc2626">
-                    <span style="color:#dc2626;font-weight:600">Ganti / Hapus file ini</span>
+                    <span style="color:#dc2626;font-weight:600">Hapus dokumen RPL ini</span>
                 </label>
                 @endif
 
-                {{-- ── Area Upload Premium ── --}}
-                <label for="file" id="dropzone"
+                <input type="file" id="rpl_document" name="rpl_document"
+                       class="form-control {{ $errors->has('rpl_document') ? 'error' : '' }}"
+                       accept=".pdf,.doc,.docx">
+                @error('rpl_document')
+                <div class="form-error">⚠ {{ $message }}</div>
+                @enderror
+                <div class="form-hint" style="display:flex;align-items:center;gap:.4rem;margin-top:.6rem;">
+                    <svg width="13" height="13" fill="none" stroke="#9ca3af" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Format: PDF, DOC, DOCX &bull; Maks. <strong>10MB</strong>
+                </div>
+            </div>{{-- /rpl_document --}}
+
+            {{-- ── Upload File Materi (Multiple, Wajib) ── --}}
+            <div class="form-group">
+                <label class="form-label" for="files">
+                    Upload Dokumen Materi <span class="required">*</span>
+                </label>
+
+                {{-- File-file yang sudah ada (mode edit) --}}
+                @if($isEdit && $material->hasFile())
+                <div style="margin-bottom:1rem;">
+                    <div style="font-size:.78rem;font-weight:700;color:#0C084C;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;">File Terpasang ({{ count($material->files) }})</div>
+                    @foreach($material->files as $index => $filePath)
+                    <div style="display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:rgba(12,8,76,.04);border:1px solid rgba(12,8,76,.12);border-radius:.75rem;margin-bottom:.5rem;">
+                        <svg width="18" height="18" fill="none" stroke="#0C084C" viewBox="0 0 24 24" style="flex-shrink:0;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <div style="flex:1;min-width:0;font-size:.82rem;color:#374151;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                            {{ basename($filePath) }}
+                        </div>
+                        <a href="{{ asset('uploads/' . $filePath) }}" target="_blank"
+                           style="font-size:.75rem;color:#0C084C;font-weight:700;text-decoration:none;padding:.3rem .6rem;border:1px solid rgba(12,8,76,.2);border-radius:.4rem;flex-shrink:0;">
+                            Lihat
+                        </a>
+                        <label style="display:inline-flex;align-items:center;gap:.4rem;font-size:.75rem;cursor:pointer;color:#dc2626;font-weight:600;flex-shrink:0;">
+                            <input type="checkbox" name="remove_files[]" value="{{ $index }}"
+                                   style="width:13px;height:13px;accent-color:#dc2626">
+                            Hapus
+                        </label>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+
+                {{-- Area Upload --}}
+                <label for="files" id="dropzone"
                        style="display:block;border:2px dashed #d1d5db;border-radius:1rem;padding:2rem 1.5rem;
                               text-align:center;cursor:pointer;transition:all .25s;background:#fafafa;position:relative;"
                        onmouseover="this.style.borderColor='#0C084C';this.style.background='#EEF7FF'"
                        onmouseout="if(!window._filePicked){this.style.borderColor='#d1d5db';this.style.background='#fafafa'}">
-                    <input type="file" id="file" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx"
-                           style="display:none" onchange="updateFileName(this)">
 
-                    {{-- Ikon Upload SVG --}}
+                    <input type="file" id="files" name="files[]"
+                           accept=".pdf,.doc,.docx,.ppt,.pptx"
+                           multiple
+                           style="display:none"
+                           onchange="updateFileNames(this)">
+
                     <div id="upload-icon-wrap" style="margin:0 auto 1rem;width:64px;height:64px;border-radius:1rem;background:rgba(12,8,76,.06);display:flex;align-items:center;justify-content:center;transition:background .25s;">
                         <svg width="30" height="30" fill="none" stroke="#0C084C" stroke-width="1.6" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1"/>
@@ -171,47 +216,101 @@ $action  = $isEdit
                         </svg>
                     </div>
 
-                    {{-- Teks Panduan --}}
                     <p style="margin:0;font-size:.9rem;color:#374151;">
                         <strong id="file-name-display" style="color:#0C084C;">Klik untuk pilih file</strong>
                         <span style="color:#9ca3af;"> atau seret ke sini</span>
                     </p>
                     <p style="margin:.5rem 0 0;font-size:.75rem;color:#9ca3af;line-height:1.5;">
-                        PDF, DOC, DOCX, PPT, PPTX &bull; Maks. <strong>10MB</strong>
+                        Pilih <strong>1 hingga 3 file</strong> materi &bull; PDF, DOC, DOCX, PPT, PPTX &bull; Maks. <strong>10MB</strong> per file
                     </p>
                 </label>
 
-                @error('file')
+                @error('files')
+                <div class="form-error">⚠ {{ $message }}</div>
+                @enderror
+                @error('files.*')
                 <div class="form-error">⚠ {{ $message }}</div>
                 @enderror
 
                 <div class="form-hint" style="display:flex;align-items:center;gap:.4rem;margin-top:.6rem;">
                     <svg width="13" height="13" fill="none" stroke="#9ca3af" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    File tersimpan di <code style="background:#EEF7FF;color:#0C084C;padding:.1rem .4rem;border-radius:.3rem;font-size:.78rem;">storage/app/public/materials/</code> dan dapat diakses publik.
+                    File tersimpan di <code style="background:#EEF7FF;color:#0C084C;padding:.1rem .4rem;border-radius:.3rem;font-size:.78rem;">storage/app/public/materials/</code>
                 </div>
             </div>{{-- /upload --}}
 
-            {{-- ── Link Game (kolom kiri baris 3) ── --}}
+            {{-- ── Link Permainan / Media Interaktif (Opsional) ── --}}
             <div class="form-group">
-                <label class="form-label" for="game_link">
-                    Link Permainan / Media Interaktif
-                    <span style="font-weight:400;color:#9ca3af">(opsional)</span>
+                <label class="form-label">
+                    Link Permainan / Media Interaktif <span style="font-weight:400;color:#9ca3af">(Opsional)</span>
                 </label>
-                <div style="position:relative">
-                    <span style="position:absolute;left:.875rem;top:50%;transform:translateY(-50%);color:#9ca3af;font-size:.875rem">🎮</span>
-                    <input type="url"
-                           id="game_link"
-                           name="game_link"
-                           class="form-control {{ $errors->has('game_link') ? 'error' : '' }}"
-                           style="padding-left:2.25rem"
-                           value="{{ old('game_link', $material->game_link ?? '') }}"
-                           placeholder="https://wordwall.net/play/...">
+                <div class="form-hint" style="margin-bottom:.75rem;">
+                    🎮 Masukkan URL dari Wordwall, Kahoot, Quizizz, dll.
                 </div>
-                @error('game_link')
+
+                {{-- Link 1 --}}
+                <div style="margin-bottom:.75rem;">
+                    <label style="font-size:.78rem;font-weight:600;color:#374151;margin-bottom:.3rem;display:block;">
+                        Link 1
+                        <span style="font-weight:400;color:#9ca3af;font-size:.74rem;">(Opsional)</span>
+                    </label>
+                    <div style="position:relative">
+                        <span style="position:absolute;left:.875rem;top:50%;transform:translateY(-50%);color:#9ca3af;font-size:.875rem">🔗</span>
+                        <input type="url"
+                               name="game_links[]"
+                               class="form-control {{ $errors->has('game_links.0') ? 'error' : '' }}"
+                               style="padding-left:2.25rem"
+                               value="{{ old('game_links.0', ($material->game_links ?? [])[0] ?? '') }}"
+                               placeholder="https://wordwall.net/play/...">
+                    </div>
+                    @error('game_links.0')
+                    <div class="form-error">⚠ {{ $message }}</div>
+                    @enderror
+                </div>
+
+                {{-- Link 2 (Opsional) --}}
+                <div style="margin-bottom:.75rem;">
+                    <label style="font-size:.78rem;font-weight:600;color:#374151;margin-bottom:.3rem;display:block;">
+                        Link 2
+                        <span style="font-weight:400;color:#9ca3af;font-size:.74rem;">(Opsional)</span>
+                    </label>
+                    <div style="position:relative">
+                        <span style="position:absolute;left:.875rem;top:50%;transform:translateY(-50%);color:#9ca3af;font-size:.875rem">🔗</span>
+                        <input type="url"
+                               name="game_links[]"
+                               class="form-control {{ $errors->has('game_links.1') ? 'error' : '' }}"
+                               style="padding-left:2.25rem"
+                               value="{{ old('game_links.1', ($material->game_links ?? [])[1] ?? '') }}"
+                               placeholder="https://kahoot.it/...">
+                    </div>
+                    @error('game_links.1')
+                    <div class="form-error">⚠ {{ $message }}</div>
+                    @enderror
+                </div>
+
+                {{-- Link 3 (Opsional) --}}
+                <div style="margin-bottom:.75rem;">
+                    <label style="font-size:.78rem;font-weight:600;color:#374151;margin-bottom:.3rem;display:block;">
+                        Link 3
+                        <span style="font-weight:400;color:#9ca3af;font-size:.74rem;">(Opsional)</span>
+                    </label>
+                    <div style="position:relative">
+                        <span style="position:absolute;left:.875rem;top:50%;transform:translateY(-50%);color:#9ca3af;font-size:.875rem">🔗</span>
+                        <input type="url"
+                               name="game_links[]"
+                               class="form-control {{ $errors->has('game_links.2') ? 'error' : '' }}"
+                               style="padding-left:2.25rem"
+                               value="{{ old('game_links.2', ($material->game_links ?? [])[2] ?? '') }}"
+                               placeholder="https://quizizz.com/...">
+                    </div>
+                    @error('game_links.2')
+                    <div class="form-error">⚠ {{ $message }}</div>
+                    @enderror
+                </div>
+
+                @error('game_links')
                 <div class="form-error">⚠ {{ $message }}</div>
                 @enderror
-                <div class="form-hint">🔗 Masukkan URL lengkap (diawali https://) dari Wordwall, Kahoot, Quizizz, atau platform lainnya.</div>
-            </div>
+            </div>{{-- /game_links --}}
 
             <hr style="border:none;border-top:1px solid #f3f4f6;margin:1.5rem 0">
 
@@ -230,7 +329,6 @@ $action  = $isEdit
                 <div class="form-hint">Jika dinonaktifkan, materi tidak akan muncul di halaman Layanan.</div>
             </div>{{-- /Status --}}
 
-
             <hr style="border:none;border-top:1px solid #f3f4f6;margin:1.5rem 0">
 
             {{-- ── Submit Buttons ── --}}
@@ -245,7 +343,7 @@ $action  = $isEdit
 
                 @if($isEdit)
                 <button type="submit" form="delete-form" class="btn btn-danger" style="margin-left:auto;"
-                        onclick="return confirm('Yakin hapus materi ini? File terkait juga akan dihapus permanen.')">
+                        onclick="return confirm('Yakin hapus materi ini? Semua file terkait juga akan dihapus permanen.')">
                     <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                     </svg>
@@ -264,26 +362,25 @@ $action  = $isEdit
     @csrf @method('DELETE')
 </form>
 @endif
+
 <script>
-function updateFileName(input) {
-    const display = document.getElementById('file-name-display');
-    const zone    = document.getElementById('dropzone');
+function updateFileNames(input) {
+    const display  = document.getElementById('file-name-display');
+    const zone     = document.getElementById('dropzone');
     const iconWrap = document.getElementById('upload-icon-wrap');
 
-    if (input.files && input.files[0]) {
-        const name = input.files[0].name;
-        const size = (input.files[0].size / 1024 / 1024).toFixed(2);
-        const ext  = name.split('.').pop().toUpperCase();
+    if (input.files && input.files.length > 0) {
+        const count = input.files.length;
+        const names = Array.from(input.files).map(f => f.name).join(', ');
+        const totalSize = (Array.from(input.files).reduce((s, f) => s + f.size, 0) / 1024 / 1024).toFixed(2);
 
-        display.textContent = name + '  (' + size + ' MB)';
+        display.textContent = count + ' file dipilih (' + totalSize + ' MB total)';
         display.style.color = '#0C084C';
 
-        // Ubah tampilan dropzone saat file terpilih
         zone.style.borderColor  = '#0C084C';
         zone.style.borderStyle  = 'solid';
         zone.style.background   = '#EEF7FF';
         iconWrap.style.background = 'rgba(255,200,30,.2)';
-        iconWrap.querySelector('svg').setAttribute('stroke', '#0C084C');
 
         window._filePicked = true;
     } else {
@@ -297,12 +394,18 @@ function updateFileName(input) {
     }
 }
 
-// Drag and Drop visual feedback
+// Drag and Drop
 const dz = document.getElementById('dropzone');
 if (dz) {
     dz.addEventListener('dragover',  e => { e.preventDefault(); dz.style.borderColor='#0C084C'; dz.style.background='#EEF7FF'; });
     dz.addEventListener('dragleave', e => { if(!window._filePicked){dz.style.borderColor='#d1d5db'; dz.style.background='#fafafa';} });
-    dz.addEventListener('drop',      e => { e.preventDefault(); if(e.dataTransfer.files.length){ document.getElementById('file').files=e.dataTransfer.files; updateFileName(document.getElementById('file')); } });
+    dz.addEventListener('drop',      e => {
+        e.preventDefault();
+        if (e.dataTransfer.files.length) {
+            document.getElementById('files').files = e.dataTransfer.files;
+            updateFileNames(document.getElementById('files'));
+        }
+    });
 }
 </script>
 @endsection

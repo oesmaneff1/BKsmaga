@@ -394,29 +394,33 @@
                 {{-- Action buttons --}}
                 <div style="padding:1.25rem 1.75rem 1.75rem;display:flex;flex-wrap:wrap;gap:.65rem;">
 
-                    {{-- Tombol Unduh Materi — tampil jika ada file_path --}}
+                    {{-- Tombol Unduh Materi — loop semua file dari array --}}
                     @if($material->hasFile())
-                    <a href="{{ asset('uploads/' . $material->file_path) }}"
-                       target="_blank" rel="noopener noreferrer"
-                       class="btn-materi btn-solid">
-                        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        Unduh Materi
-                    </a>
+                        @foreach($material->files as $fileIndex => $filePath)
+                        <a href="{{ asset('uploads/' . $filePath) }}"
+                           target="_blank" rel="noopener noreferrer"
+                           class="btn-materi btn-solid">
+                            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                      d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            Unduh Materi{{ count($material->files) > 1 ? ' ' . ($fileIndex + 1) : '' }}
+                        </a>
+                        @endforeach
                     @endif
 
-                    {{-- Tombol Mainkan Game — tampil jika ada game_link --}}
+                    {{-- Tombol Mainkan Game — loop semua game link dari array --}}
                     @if($material->hasGameLink())
-                    <a href="{{ $material->game_link }}"
-                       target="_blank" rel="noopener noreferrer"
-                       class="btn-materi btn-outline">
-                        <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z"/>
-                        </svg>
-                        Mainkan Game
-                    </a>
+                        @foreach($material->game_links as $linkIndex => $gameLink)
+                        <a href="{{ $gameLink }}"
+                           target="_blank" rel="noopener noreferrer"
+                           class="btn-materi btn-outline">
+                            <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            Mainkan{{ count($material->game_links) > 1 ? ' ' . ($linkIndex + 1) : '' }}
+                        </a>
+                        @endforeach
                     @endif
 
                     {{-- Fallback jika tidak ada file maupun link --}}

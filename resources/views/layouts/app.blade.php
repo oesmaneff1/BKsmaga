@@ -12,7 +12,8 @@
 
     <title>@yield('title', 'SMA Negeri 3 Kediri') – Portal Resmi</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('build/assets/app-CGAfUdue.css') }}">
+    <script src="{{ asset('build/assets/app-MvBNrVg4.js') }}" defer></script>
     @stack('head')
 
     <style>

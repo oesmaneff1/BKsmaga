@@ -17,27 +17,32 @@ class Material extends Model
     /**
      * Kolom yang boleh diisi secara massal (mass assignment).
      *
-     * - title       : judul materi bimbingan
-     * - description : deskripsi / ringkasan isi materi
-     * - category    : jenjang kelas ('kelas-10', 'kelas-11', 'kelas-12')
-     * - file_path   : path file dokumen (PDF, PPT, dsb.)
-     * - game_link   : URL tautan permainan / media interaktif
-     * - is_active   : tampilkan atau sembunyikan materi
+     * - title        : judul materi bimbingan
+     * - description  : deskripsi / ringkasan isi materi
+     * - category     : jenjang kelas ('kelas-10', 'kelas-11', 'kelas-12')
+     * - files        : array path file dokumen (PDF, PPT, dsb.) — format JSON
+     * - game_links   : array URL tautan permainan / media interaktif — format JSON
+     * - rpl_document : path dokumen RPL (opsional)
+     * - is_active    : tampilkan atau sembunyikan materi
      */
     protected $fillable = [
         'title',
         'description',
         'category',
-        'file_path',
-        'game_link',
+        'files',
+        'game_links',
+        'rpl_document',
         'is_active',
     ];
 
     /**
      * Cast tipe data kolom ke tipe PHP yang sesuai.
+     * Kolom JSON akan otomatis dikonversi menjadi array PHP.
      */
     protected $casts = [
-        'is_active' => 'boolean',
+        'is_active'  => 'boolean',
+        'files'      => 'array',
+        'game_links' => 'array',
     ];
 
     // ─── Scopes ──────────────────────────────────────────────────────────────
@@ -83,18 +88,35 @@ class Material extends Model
     }
 
     /**
-     * Cek apakah materi ini memiliki file dokumen.
+     * Cek apakah materi ini memiliki setidaknya satu file dokumen.
      */
     public function hasFile(): bool
     {
-        return !empty($this->file_path);
+        return !empty($this->files) && count($this->files) > 0;
     }
 
     /**
-     * Cek apakah materi ini memiliki tautan permainan.
+     * Cek apakah materi ini memiliki setidaknya satu tautan permainan.
      */
     public function hasGameLink(): bool
     {
-        return !empty($this->game_link);
+        return !empty($this->game_links) && count($this->game_links) > 0;
+    }
+
+    /**
+     * Ambil file pertama (primary file) dari array files.
+     * Berguna untuk backward compatibility dengan tampilan yang hanya butuh 1 file.
+     */
+    public function getPrimaryFileAttribute(): ?string
+    {
+        return $this->files[0] ?? null;
+    }
+
+    /**
+     * Ambil game link pertama (primary link) dari array game_links.
+     */
+    public function getPrimaryGameLinkAttribute(): ?string
+    {
+        return $this->game_links[0] ?? null;
     }
 }

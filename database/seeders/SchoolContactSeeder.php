@@ -19,7 +19,7 @@ class SchoolContactSeeder extends Seeder
                 'address'        => 'Jl. Mauni No 88, Bangsal, Kec. Pesantren, Kota Kediri, Provinsi Jawa Timur 64131',
                 'phone'          => '(0354) 683809',
                 'email'          => 'sman3kdr@sman3kediri.sch.id',
-                'instagram_link' => 'https://www.instagram.com/smagakediri.official/',
+                'instagram_link' => 'https://www.instagram.com/bk_smaga_kediri/',
                 'youtube_link'   => 'https://www.youtube.com/@sman3kediri',
                 'tiktok_link'    => 'https://www.tiktok.com/@smagakediri_official',
                 'is_active'      => true,

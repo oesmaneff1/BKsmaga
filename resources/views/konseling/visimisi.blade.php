@@ -78,8 +78,8 @@
 </section>
 
 {{-- ═══ ASAS-ASAS ════════════════════════════════════════════════════════════ --}}
-<section style="padding:5rem 1.5rem;background:#EEF7FF;">
-    <div style="max-width:1200px;margin:0 auto;">
+<section style="padding:5rem 1.5rem;background:#EEF7FF;overflow-x:hidden;">
+    <div style="max-width:1200px;margin:0 auto;box-sizing:border-box;">
         <div style="text-align:center;margin-bottom:3.5rem;">
             <h2 style="font-family:'Merriweather',serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;color:#0C084C;margin-bottom:.75rem;">
                 Asas-Asas Bimbingan dan Konseling
@@ -89,7 +89,7 @@
             </p>
         </div>
 
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;box-sizing:border-box;">
             @foreach([
                 ['icon'=>'<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>','title'=>'Kerahasiaan','desc'=>'Segala informasi, cerita, dan keluh kesah yang kamu bagikan kepada guru BK akan dijaga kerahasiaannya dengan sangat ketat.','highlight'=>true],
                 ['icon'=>'<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>','title'=>'Kesukarelaan','desc'=>'Hadir tanpa adanya unsur paksaan. Siswa diharapkan datang dengan sukarela dan ikhlas.','highlight'=>false],
@@ -118,8 +118,8 @@
 </section>
 
 {{-- ═══ FUNGSI ═══════════════════════════════════════════════════════════════ --}}
-<section style="padding:5rem 1.5rem;background:#fff;">
-    <div style="max-width:860px;margin:0 auto;">
+<section style="padding:5rem 1.5rem;background:#fff;overflow:hidden;">
+    <div style="max-width:860px;margin-left:auto;margin-right:auto;">
         <div style="text-align:center;margin-bottom:3.5rem;">
             <h2 style="font-family:'Merriweather',serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;color:#0C084C;margin-bottom:.75rem;">
                 Fungsi Bimbingan dan Konseling
@@ -129,24 +129,28 @@
             </p>
         </div>
 
-        <div style="display:flex;flex-direction:column;gap:1.25rem;">
-            @foreach([
-                ['title'=>'Pemahaman','desc'=>'Membantu siswa, guru, dan orang tua untuk lebih memahami potensi, bakat, minat, serta karakteristik kondisi siswa.'],
-                ['title'=>'Pencegahan (Preventif)','desc'=>'Memberikan antisipasi dan edukasi agar siswa terhindar dari berbagai masalah yang menghambat.'],
-                ['title'=>'Pengentasan (Kuratif)','desc'=>'Memberikan bantuan dan intervensi langsung untuk membantu siswa keluar dari permasalahan.'],
-                ['title'=>'Pemeliharaan dan Pengembangan','desc'=>'Menjaga hal-hal positif yang sudah ada pada diri siswa dan terus mengembangkannya secara berkelanjutan.'],
-            ] as $fungsi)
-            <div style="display:flex;align-items:flex-start;gap:1.25rem;padding:1.5rem 1.75rem;background:#EEF7FF;border-radius:1.25rem;border:1px solid rgba(12,8,76,.07);">
-                <div style="flex-shrink:0;width:2.5rem;height:2.5rem;border-radius:.75rem;background:#0C084C;display:flex;align-items:center;justify-content:center;margin-top:.1rem;">
-                    <svg width="18" height="18" fill="none" stroke="#FFC81E" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                </div>
-                <div>
-                    <h3 style="color:#0C084C;font-size:1.05rem;font-weight:700;margin-bottom:.35rem;">{!! $fungsi['title'] !!}</h3>
-                    <p style="color:#6b7280;font-size:.9rem;line-height:1.75;margin:0;">{!! $fungsi['desc'] !!}</p>
-                </div>
-            </div>
-            @endforeach
+        @foreach([
+            ['title'=>'Pemahaman','desc'=>'Membantu siswa, guru, dan orang tua untuk lebih memahami potensi, bakat, minat, serta karakteristik kondisi siswa.'],
+            ['title'=>'Pencegahan (Preventif)','desc'=>'Memberikan antisipasi dan edukasi agar siswa terhindar dari berbagai masalah yang menghambat.'],
+            ['title'=>'Pengentasan (Kuratif)','desc'=>'Memberikan bantuan dan intervensi langsung untuk membantu siswa keluar dari permasalahan.'],
+            ['title'=>'Pemeliharaan dan Pengembangan','desc'=>'Menjaga hal-hal positif yang sudah ada pada diri siswa dan terus mengembangkannya secara berkelanjutan.'],
+        ] as $fungsi)
+        <div style="margin-bottom:1.25rem;padding:1.5rem 1.75rem;background:#EEF7FF;border-radius:1.25rem;border:1px solid rgba(12,8,76,.07);">
+            <table style="width:100%;border-collapse:collapse;">
+                <tr>
+                    <td style="width:2.5rem;vertical-align:top;padding-right:1.25rem;">
+                        <div style="width:2.5rem;height:2.5rem;border-radius:.75rem;background:#0C084C;display:flex;align-items:center;justify-content:center;">
+                            <svg width="18" height="18" fill="none" stroke="#FFC81E" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                    </td>
+                    <td style="vertical-align:top;">
+                        <h3 style="color:#0C084C;font-size:1.05rem;font-weight:700;margin:0 0 .35rem 0;">{!! $fungsi['title'] !!}</h3>
+                        <p style="color:#6b7280;font-size:.9rem;line-height:1.75;margin:0;">{!! $fungsi['desc'] !!}</p>
+                    </td>
+                </tr>
+            </table>
         </div>
+        @endforeach
     </div>
 </section>
 

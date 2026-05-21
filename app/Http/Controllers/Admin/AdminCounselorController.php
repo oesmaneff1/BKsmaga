@@ -121,7 +121,7 @@ class AdminCounselorController extends Controller
     public function destroy(Counselor $counselor)
     {
         if ($counselor->photo) {
-            Storage::disk('public')->delete($counselor->photo);
+            @unlink(public_path('uploads/' . $counselor->photo));
         }
 
         $counselor->delete();
